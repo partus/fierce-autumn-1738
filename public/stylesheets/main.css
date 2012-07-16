@@ -1,0 +1,17 @@
+div {
+    background-color: #f0f0f0;
+    margin:1px;
+    width:100%;
+
+}
+#thread{
+    position: fixed;
+    top: 4em;
+    bottom: 1em;
+    width:100%;
+    background-color: #f8f8ff;
+}
+input[type=text]{
+    width:100%;
+
+}

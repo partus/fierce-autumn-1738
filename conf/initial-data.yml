@@ -1,0 +1,9 @@
+User(init)
+ name: name
+Messsage(init)
+  text: text
+Room(init)
+    name:name
+Map(init)
+  userId: 1
+  roomId: 1

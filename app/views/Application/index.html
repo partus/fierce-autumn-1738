@@ -1,0 +1,138 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+#{set 'moreScripts'}
+    #{script 'jquery.scrollTo-min.js'/}
+#{/set}
+
+<div id="newMessage">
+    <form id="form">
+        <input type="text" id="message" name="message" autocomplete="off">
+        <input type="submit" value="send" id="send">
+    </form>
+
+</div>
+<div id="thread">
+    <h3>Welcome! This is a  dummy chat.</h3>
+    Type help and  press enter  to find out more.
+
+</div>
+<script type="text/javascript">
+    var interpreter = function (str) {
+        n = str.split(/\s+/); //get array of substrings removing spaces,
+        //this code is because js is stupid
+        if (n.length > 1) {
+            if (!n[0]) {
+                n.shift();
+            }
+            if (!n[n.length - 1]) {
+                n.pop();
+            }
+        }
+
+        if (n[0]) {
+            console.info("interpreter");
+            switch (n[0]) {
+                case "help":
+                    $.post("@{help()}", {"a":"b"}, message);
+                    break;
+                case "connect":
+                    if (n.length == 2) {
+                        $.ajax({
+                            type:'POST',
+                            url:"@{connect()}",
+                            data:{"username":n[1]},
+                            success:message
+                        });
+                    *{$.post("@{connect()}",{"username":n[1]}, message );}*
+                    } else {
+                        error();
+                    }
+                    ;
+                    break;
+                case "disconnect":
+                    $.post("@{disconnect()}", message);
+                    break;
+                case "list":
+                    $.post("@{list()}", message);
+                    break;
+                case "join":
+                    if (n.length == 2) {
+                        $.post("@{join()}",
+                                {"room":n[1]}
+                                ,
+                                message
+                        )
+                    }
+                    break;
+                case "leave":
+                    if (n.length == 2) {
+                        $.post("@{leave()}",
+                                {"room":n[1]}
+                                ,
+                                message
+                        )
+                    } else
+                {
+                    error();
+                }
+                    break;
+                case "send":
+                    if (n.length > 2) {
+                        var room = n.pop();//pop last element
+                        n.shift();//remove first element
+                        //recover the message
+                        var messageString = " ";
+                        for (subStr  in n) {
+                            messageString = messageString + n[subStr] + " ";
+                        }
+                        $.post("@{send()}", {"room":room, "message":messageString}, message);
+                        fetchMessages();
+
+                    }
+                    break;
+                default:
+                    error();
+            }
+        }
+
+    }
+
+    var error = function () {
+        message("<div style='color:rgba(255,26,33,0.88)'>Input error, type help for help. <div>");
+
+    }
+    // Scroll the messages panel to the end
+var fetchMessages= function(){
+    $.post("@{fetchMessages()}", message)
+}
+
+    // Reload the whole messages panel
+    var refresh = function () {
+
+        $.get("refresh",
+                {"user":getCurrentUser()}, function (data) {
+                    $("#thread").prepend(data);
+                    // console.info(data);
+
+                })
+
+    }
+
+
+    $('#form').submit(function () {
+        interpreter($("#message").val());
+        $("#message").val("");
+        // console.info("clicked");
+        return false;
+    });
+    // Call refresh every 5 seconds
+   setInterval(fetchMessages, 2000);
+
+
+    var message = function (data) {
+        $("#thread").prepend(data);
+        console.info(data);
+    }
+
+</script>
+*{#{welcome /}}*
