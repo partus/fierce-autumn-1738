@@ -12,7 +12,7 @@ switch (n[0])
     case "help":
         x="Today it's Sunday";
         break;
-    case "connect":
+    case "connec":
         x="Today it's Monday";
         break;
     case "disconnect":
